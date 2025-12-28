@@ -44,8 +44,8 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`id_member`, `member_name`, `email`, `passwd`, `active`, `userid_formatted`, `prefer_censor`, `gender`) VALUES
-(1, 'admin', 'admin@example.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'admin', '0', 'N'),
-(2, 'player', 'player@example.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'player', '', 'N');
+(1, 'admin', 'admin@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'admin', '0', 'N'),
+(2, 'player', 'player@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'player', '', 'N');
 
 -- --------------------------------------------------------
 
@@ -765,8 +765,8 @@ CREATE TABLE `r2_members` (
 --
 
 INSERT INTO `r2_members` (`id_member`, `member_name`, `email`, `passwd`, `active`, `userid_formatted`, `prefer_censor`, `gender`) VALUES
-(1, 'admin', 'admin@example.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'admin', '0', 'N'),
-(2, 'player', 'player@example.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'player', '', 'N');
+(1, 'admin', 'admin@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'admin', '0', 'N'),
+(2, 'player', 'player@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'player', '', 'N');
 
 -- --------------------------------------------------------
 
