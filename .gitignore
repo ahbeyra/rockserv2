@@ -1,0 +1,52 @@
+!Build/
+.last_cover_stats
+/META.yml
+/META.json
+/MYMETA.*
+*.o
+*.pm.tdy
+*.bs
+
+# Devel::Cover
+cover_db/
+
+# Devel::NYTProf
+nytprof.out
+
+# Dizt::Zilla
+/.build/
+
+# Module::Build
+_build/
+Build
+Build.bat
+
+# Module::Install
+inc/
+
+# ExtUtils::MakeMaker
+/blib/
+/_eumm/
+/*.gz
+/Makefile
+/Makefile.old
+/MANIFEST.bak
+/pm_to_blib
+/*.zip
+
+#Ignore Files
+.DS_STORE
+*.r2
+*.dnk
+data/php-sessions/
+.env
+data/
+**/saved/*
+!**/saved/placeholder.txt
+**/userinfo/*
+!**/userinfo/placeholder.txt
+**/dbs/*
+!**/dbs/.gitkeep
+**/DUMPFILE
+**/nohup.out
+**/objectreport.html

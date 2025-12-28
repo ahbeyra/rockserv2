@@ -1,0 +1,73 @@
+services:
+  db:
+    image: mariadb:10.6
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-rockserv_root}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./r2_schema_data.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./docker/mysql-init/02_rockserv_user.sql:/docker-entrypoint-initdb.d/02_rockserv_user.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MARIADB_ROOT_PASSWORD:-rockserv_root}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rockserv2:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ROCKSERV_GAME: dillfrog
+      ROCKSERV_DB_DRIVER: mariadb
+      ROCKSERV_DB_HOST: db
+      ROCKSERV_DB_PORT: 3306
+      ROCKSERV_DB_USER: ${ROCKSERV_DB_USER:-rockserv}
+      ROCKSERV_DB_PASS: ${ROCKSERV_DB_PASS:-change_me}
+    ports:
+      - "4000:4000"
+      - "2331:2331"
+    volumes:
+      - ./data/dillfrog/userinfo:/app/dillfrog/src/userinfo
+      - ./data/dillfrog/saved:/app/dillfrog/src/saved
+    healthcheck:
+      test: ["CMD", "rockserv-healthcheck"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  rockserv2_fuzzem:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ROCKSERV_GAME: fuzzem
+      ROCKSERV_DB_DRIVER: mariadb
+      ROCKSERV_DB_HOST: db
+      ROCKSERV_DB_PORT: 3306
+      ROCKSERV_DB_USER: ${ROCKSERV_DB_USER:-rockserv}
+      ROCKSERV_DB_PASS: ${ROCKSERV_DB_PASS:-change_me}
+      ROCKSERV_TALKER: "1"
+      ROCKSERV_TALKER_HOST: localhost
+      ROCKSERV_TALKER_PORT: 2331
+    ports:
+      - "4040:4000"
+      - "2332:2331"
+    volumes:
+      - ./data/fuzzem/userinfo:/app/fuzzem/src/userinfo
+      - ./data/fuzzem/saved:/app/fuzzem/src/saved
+    healthcheck:
+      test: ["CMD", "rockserv-healthcheck"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  mysql_data:

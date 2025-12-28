@@ -1,0 +1,2 @@
+GRANT ALL PRIVILEGES ON DATABASE r2_dillfrog TO rockserv;
+GRANT ALL PRIVILEGES ON DATABASE r2_fuzzem TO rockserv;

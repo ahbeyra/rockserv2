@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      ROCKSERV_GAME: ${ROCKSERV_GAME:-fuzzem}
+      ROCKSERV_DB_DRIVER: ${ROCKSERV_DB_DRIVER:-mariadb}
+      ROCKSERV_DB_HOST: ${ROCKSERV_DB_HOST:-db}
+      ROCKSERV_DB_PORT: ${ROCKSERV_DB_PORT:-3306}
+      ROCKSERV_DB_USER: ${ROCKSERV_DB_USER:-rockserv}
+      ROCKSERV_DB_PASS: ${ROCKSERV_DB_PASS:-change_me}
+      ROCKSERV_DB_NAME: ${ROCKSERV_DB_NAME:-}
+      ROCKSERV_TALKER_HOST: ${ROCKSERV_TALKER_HOST:-rockserv2_fuzzem}
+      ROCKSERV_TALKER_PORT: ${ROCKSERV_TALKER_PORT:-2331}
+      ROCKSERV_SESSION_PATH: ${ROCKSERV_SESSION_PATH:-/var/lib/php/sessions}
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web:/var/www/html:ro
+      - ./data/php-sessions:/var/lib/php/sessions
