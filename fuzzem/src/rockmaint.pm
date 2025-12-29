@@ -358,6 +358,7 @@ package rock_maint;
 use strict;
 use Dillfrog;
 use Dillfrog::Mail;
+use Scalar::Util qw(blessed);
 # idle_part: tells some objects in the game to idle. USES 'EACH'.
 # idle_full: tells all objects in the game to idle.
 
@@ -378,6 +379,26 @@ sub new {
     return $self;
 }
 # $main::maint_friend->update();
+
+sub repair_unblessed_obj {
+    my ($objid, $obj) = @_;
+    return 0 unless ref($obj) eq 'HASH';
+
+    my $class = $obj->{'BLESS'};
+    if (!$class && defined $obj->{'TYPE'}) {
+        $class = $obj->{'TYPE'} == -1 ? 'room'
+               : $obj->{'TYPE'} == 0  ? 'item'
+               : $obj->{'TYPE'} == 1  ? 'player'
+               : $obj->{'TYPE'} == 2  ? 'npc'
+               : undef;
+    }
+
+    return 0 unless $class;
+    eval { bless($obj, $class); 1 } or return 0;
+    eval { $obj->auto_bless; 1 } if $class eq 'room';
+
+    return blessed($obj) ? 1 : 0;
+}
 # $main::maint_friend->idle_full();
 # $main::maint_friend->{'@SYNC'}=40;
 #&rock_shout(undef, "{2}:: {1}rokamaint{2} :: {17}Synching idlestart to $main::idlestart...\n", 1);
@@ -715,7 +736,16 @@ sub maint_part {
      $a = $main::maint_part_keys->[$main::maint_part_index++];
      $b = $a ? $main::objs->{$a} : undef;
      next if !$a;
-     if(ref($b) ne uc(ref($b))){
+     if(!blessed($b) && !repair_unblessed_obj($a, $b)) {
+        my $bref = ref($b) || 'undef';
+        my $bname = ref($b) eq 'HASH' ? ($b->{'NAME'} || 'unknown') : 'unknown';
+        my $btype = ref($b) eq 'HASH' && defined $b->{'TYPE'} ? $b->{'TYPE'} : 'unknown';
+        print "RockMaint ERROR!! main::objs key $a is unblessed ($bref, name=$bname, type=$btype).\n";
+        &main::rock_shout(undef, "{11}RockMaint ERROR!! main::objs key $a is unblessed.\n", 1);
+        delete $main::objs->{$a};
+        next;
+     }
+     if(blessed($b)){
         $b->on_idle;
         # make the item decay away if it's rotting
         if($b->{'ROT'} && (time > int($b->{'ROT'}))) { $b->rot; }
@@ -726,10 +756,6 @@ sub maint_part {
         foreach $a (keys(%{$b})) {
           if("$b->{$a}" eq '') {  delete $b->{$a}; }
         }
-     } elsif($a) {
-        print "RockMaint ERROR!! main::objs key $a does not have a blessed value.\n";
-        &main::rock_shout(undef, "{11}RockMaint ERROR!! main::objs key $a does not have a blessed value.\n", 1);
-        delete $main::objs->{$a};
      }
  }
 }

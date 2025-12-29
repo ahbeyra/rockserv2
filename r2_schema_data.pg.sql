@@ -544,6 +544,8 @@ CREATE TABLE r2_dillfrog.players (
     admin character(1) DEFAULT NULL::bpchar,
     email character varying(80) DEFAULT NULL::character varying,
     race bigint,
+    npcdeaths bigint,
+    npckills bigint,
     pvpkills bigint,
     pvpdeaths bigint,
     dp double precision,
@@ -1284,6 +1286,8 @@ CREATE TABLE r2_fuzzem.r2_players (
     admin character(1) DEFAULT NULL::bpchar,
     email character varying(80) DEFAULT NULL::character varying,
     race bigint,
+    npcdeaths bigint,
+    npckills bigint,
     pvpkills bigint,
     pvpdeaths bigint,
     dp double precision,
@@ -1471,4 +1475,3 @@ CREATE UNIQUE INDEX idx_16809_name_idx ON r2_fuzzem.r2_players USING btree (name
 --
 
 \unrestrict F6wiryoXr9b2mp6CwSGMbCfP2pXkQQmJRmJgvIClYCAh07eIqFjqdmDHiqI2oxx
-

@@ -44,8 +44,8 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`id_member`, `member_name`, `email`, `passwd`, `active`, `userid_formatted`, `prefer_censor`, `gender`) VALUES
-(1, 'admin', 'admin@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'admin', '0', 'N'),
-(2, 'player', 'player@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'player', '', 'N');
+(1, 'admin', 'support@doyometer.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'admin', '0', 'N'),
+(2, 'player', 'support@doyometer.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'player', '', 'N');
 
 -- --------------------------------------------------------
 
@@ -372,6 +372,8 @@ CREATE TABLE `players` (
   `ADMIN` char(1) DEFAULT NULL,
   `EMAIL` varchar(80) DEFAULT NULL,
   `RACE` int DEFAULT NULL,
+  `NPCDEATHS` int DEFAULT NULL,
+  `NPCKILLS` int DEFAULT NULL,
   `PVPKILLS` int DEFAULT NULL,
   `PVPDEATHS` int DEFAULT NULL,
   `DP` float DEFAULT NULL,
@@ -765,8 +767,8 @@ CREATE TABLE `r2_members` (
 --
 
 INSERT INTO `r2_members` (`id_member`, `member_name`, `email`, `passwd`, `active`, `userid_formatted`, `prefer_censor`, `gender`) VALUES
-(1, 'admin', 'admin@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'admin', '0', 'N'),
-(2, 'player', 'player@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', '1', 'player', '', 'N');
+(1, 'admin', 'support@doyometer.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'admin', '0', 'N'),
+(2, 'player', 'support@doyometer.com', '4cb9c8a8048fd02294477fcb1a41191a', '1', 'player', '', 'N');
 
 -- --------------------------------------------------------
 
@@ -875,6 +877,8 @@ CREATE TABLE `r2_players` (
   `ADMIN` char(1) DEFAULT NULL,
   `EMAIL` varchar(80) DEFAULT NULL,
   `RACE` int DEFAULT NULL,
+  `NPCDEATHS` int DEFAULT NULL,
+  `NPCKILLS` int DEFAULT NULL,
   `PVPKILLS` int DEFAULT NULL,
   `PVPDEATHS` int DEFAULT NULL,
   `DP` float DEFAULT NULL,
@@ -888,9 +892,9 @@ CREATE TABLE `r2_players` (
 -- Dumping data for table `r2_players`
 --
 
-INSERT INTO `r2_players` (`NAME`, `LEV`, `KNO`, `MAJ`, `CHA`, `AGI`, `STR`, `DEF`, `WORTH`, `REPU`, `ADMIN`, `EMAIL`, `RACE`, `PVPKILLS`, `PVPDEATHS`, `DP`, `ARENA_PTS`, `INVENTORY`, `PW`, `LAST_SAVED`) VALUES
-('Admin', 16, 14, 17, 14, 21, 22, 16, 0, 0, '1', NULL, 1, 0, 0, 2.53571, -100, '{12}You are carrying: {6}{17}(c) {17}shortsword{2}.\n{12}You are wearing: {6}{17}(c) {6}leather belt {7}[waist]{2}, {6}{17}(c) {6}foibly skin {7}[torso]{2}, {6}{17}(c) {6}small wooden shield {7}[off-hand]{2}, {6}{17}(c) {6}petrobeads {7}[neck]{2}.\n', '908142089', '2020-07-22 07:07:20'),
-('Player', 1, 1, 1, 2, 1, 1, 2, 0, 0, '0', '', 6, 0, 0, 0.392857, -100, '{12}You are carrying: {6}{17}(c) {17}shortsword{2}.\n{12}You are wearing: {6}{17}(c) {6}foibly skin {7}[torso]{2}, {6}{17}(c) {6}leather belt {7}[waist]{2}, {6}{17}(c) {6}small wooden shield {7}[off-hand]{2}, {6}{17}(c) {6}petrobeads {7}[neck]{2}.\n', '947601318', '2020-07-21 13:12:12');
+INSERT INTO `r2_players` (`NAME`, `LEV`, `KNO`, `MAJ`, `CHA`, `AGI`, `STR`, `DEF`, `WORTH`, `REPU`, `ADMIN`, `EMAIL`, `RACE`, `NPCDEATHS`, `NPCKILLS`, `PVPKILLS`, `PVPDEATHS`, `DP`, `ARENA_PTS`, `INVENTORY`, `PW`, `LAST_SAVED`) VALUES
+('Admin', 16, 14, 17, 14, 21, 22, 16, 0, 0, '1', NULL, 1, 0, 0, 0, 0, 2.53571, -100, '{12}You are carrying: {6}{17}(c) {17}shortsword{2}.\n{12}You are wearing: {6}{17}(c) {6}leather belt {7}[waist]{2}, {6}{17}(c) {6}foibly skin {7}[torso]{2}, {6}{17}(c) {6}small wooden shield {7}[off-hand]{2}, {6}{17}(c) {6}petrobeads {7}[neck]{2}.\n', '908142089', '2020-07-22 07:07:20'),
+('Player', 1, 1, 1, 2, 1, 1, 2, 0, 0, '0', '', 6, 0, 0, 0, 0, 0.392857, -100, '{12}You are carrying: {6}{17}(c) {17}shortsword{2}.\n{12}You are wearing: {6}{17}(c) {6}foibly skin {7}[torso]{2}, {6}{17}(c) {6}leather belt {7}[waist]{2}, {6}{17}(c) {6}small wooden shield {7}[off-hand]{2}, {6}{17}(c) {6}petrobeads {7}[neck]{2}.\n', '947601318', '2020-07-21 13:12:12');
 
 -- --------------------------------------------------------
 

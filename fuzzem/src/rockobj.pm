@@ -1287,8 +1287,9 @@ sub inv_cgetobj {
     ## NEW ADDITION: FOLLOWING LINE
     $objname = ' '.$objname;
     foreach $obj (@_) {
+        next unless ref($obj);
         if ( ( index(' '.lc($obj->{'NICK'}||$obj->{'NAME'}), $objname) > -1 ) && ($obj->{'TYPE'} >= $mintype) ) { push(@pobjs, $obj); }
-    } 
+    }
     $objname = substr($objname, 1);
     
     if( $#pobjs == 0 ) { 

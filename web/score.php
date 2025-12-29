@@ -97,14 +97,32 @@ if ($player_name === '' || !preg_match('/^[A-Za-z0-9_]{3,20}$/', $player_name)) 
     try {
         $pdo = rockserv_pdo();
         $players_table = rockserv_players_table();
-        $stmt = $pdo->prepare(
-            "SELECT NAME, LEV, RACE, KNO, MAJ, CHA, AGI, STR, DEF, WORTH, REPU, PVPKILLS, PVPDEATHS, ARENA_PTS, DP, LAST_SAVED
-             FROM {$players_table}
-             WHERE LOWER(NAME) = ?
-             LIMIT 1"
-        );
-        $stmt->execute([$player_lower]);
-        $player = $stmt->fetch();
+        $player_query_base = "SELECT NAME, LEV, RACE, KNO, MAJ, CHA, AGI, STR, DEF, WORTH, REPU";
+        $player_query_pvp = "PVPKILLS, PVPDEATHS";
+        $player_query_pve = "NPCKILLS, NPCDEATHS";
+        $player_query_tail = "ARENA_PTS, DP, LAST_SAVED FROM {$players_table} WHERE LOWER(NAME) = ? LIMIT 1";
+        $include_pve = true;
+        $player = null;
+
+        try {
+            $stmt = $pdo->prepare(
+                "{$player_query_base}, {$player_query_pvp}, {$player_query_pve}, {$player_query_tail}"
+            );
+            $stmt->execute([$player_lower]);
+            $player = $stmt->fetch();
+        } catch (Throwable $e) {
+            $message = strtolower($e->getMessage());
+            if (strpos($message, 'npckills') !== false || strpos($message, 'npcdeaths') !== false || strpos($message, 'column') !== false) {
+                $include_pve = false;
+                $stmt = $pdo->prepare(
+                    "{$player_query_base}, {$player_query_pvp}, {$player_query_tail}"
+                );
+                $stmt->execute([$player_lower]);
+                $player = $stmt->fetch();
+            } else {
+                throw $e;
+            }
+        }
 
         if (!$player) {
             $error = 'Player not found';
@@ -216,6 +234,9 @@ rockserv_render_header('Rock: Crashed Plane Profile', 'Scoreboard Detail', false
                 <?php
                   $race_label = rockserv_race_label($player['RACE'], $realm);
                   $stats = rockserv_score_stats($player);
+                  $pve_kills = $include_pve ? (int)($player['NPCKILLS'] ?? 0) : 0;
+                  $pve_deaths = $include_pve ? (int)($player['NPCDEATHS'] ?? 0) : 0;
+                  $pve_ratio = $pve_deaths > 0 ? number_format($pve_kills / max(1, $pve_deaths), 2) : '0.00';
                   $pvp_kills = (int)($player['PVPKILLS'] ?? 0);
                   $pvp_deaths = (int)($player['PVPDEATHS'] ?? 0);
                   $pvp_ratio = $pvp_deaths > 0 ? number_format($pvp_kills / max(1, $pvp_deaths), 2) : '0.00';
@@ -235,8 +256,11 @@ rockserv_render_header('Rock: Crashed Plane Profile', 'Scoreboard Detail', false
                     </ul>
                   </div>
                   <div class="panel">
-                    <h3>Combat</h3>
+                    <h3>Combat (PvE / PvP)</h3>
                     <ul class="list">
+                      <li><span>PvE Kills</span><span><?php echo htmlspecialchars((string)$pve_kills, ENT_QUOTES); ?></span></li>
+                      <li><span>PvE Deaths</span><span><?php echo htmlspecialchars((string)$pve_deaths, ENT_QUOTES); ?></span></li>
+                      <li><span>PvE Ratio</span><span><?php echo htmlspecialchars($pve_ratio, ENT_QUOTES); ?></span></li>
                       <li><span>PvP Kills</span><span><?php echo htmlspecialchars((string)$pvp_kills, ENT_QUOTES); ?></span></li>
                       <li><span>PvP Deaths</span><span><?php echo htmlspecialchars((string)$pvp_deaths, ENT_QUOTES); ?></span></li>
                       <li><span>PvP Ratio</span><span><?php echo htmlspecialchars($pvp_ratio, ENT_QUOTES); ?></span></li>

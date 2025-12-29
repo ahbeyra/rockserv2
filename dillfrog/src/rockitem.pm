@@ -2620,7 +2620,7 @@ sub on_say {
   $saystr = $$saystr;
   $saystr =~ s/^\s+//g;
   if($saystr eq "$self->{'TRIGKEY'}") {
-      $obj->log_append("{2}As you speak the ancient password, a stone panel suddenly slides open on the northern wall. The panel reveals three seperate slabs of granite along with an odd button.\n");
+      $obj->log_append("{2}As you speak the ancient password, a stone panel suddenly slides open on the northern wall. The panel reveals three separate slabs of granite along with an odd button.\n");
       $obj->room_sighttell("{7}A stone panel suddenly slides open on the northern wall.\n");
       $main::map->[$self->{'ROOM'}]->item_spawn(530, 531, 532, 537);
       $self->dissolve_allsubs();

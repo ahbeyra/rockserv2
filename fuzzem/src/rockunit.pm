@@ -2951,7 +2951,7 @@ Baine says, "Adamant goes in my box, one circle, two arms, three points, four co
 END_CAP
 	}elsif ($topic =~/box/i){
 	   return <<END_CAP;
-Baine says, "Bring me the rewards that you recieve."
+Baine says, "Bring me the rewards that you receive."
 END_CAP
 	}
     return undef;

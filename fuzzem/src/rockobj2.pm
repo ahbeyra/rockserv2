@@ -742,7 +742,7 @@ sub log_suspicious_activity {
 	# happened as a result of this activity.
 
     # This is used to note suspicious activity (aka, scriptiness)
-    my ($self, $msg, $thresh) = @_; # thresh is min occurrences before we care; default 0 (first occurrance)
+    my ($self, $msg, $thresh) = @_; # thresh is min occurrences before we care; default 0 (first occurrence)
 	
     # Non-players can't be suspicious.. they just can't!
     return unless $self->{'TYPE'} == 1;
@@ -2556,12 +2556,12 @@ sub daily_win {
 	return;
 	
 	if ($self->{'LEV'} < 100) {
-	  $self->log_append("{17}You're not quite big enough to be recieving a daily prize!!\n");
+	  $self->log_append("{17}You're not quite big enough to be receiving a daily prize!!\n");
 	  return;
 	}
 
 	if(($self->daily_win_check() == 1)  && (!$self->{'ADMIN'} == 1)) {
-    	$self->log_error("You have already recieved your daily win prize for today, what more do you want?");
+    	$self->log_error("You have already received your daily win prize for today, what more do you want?");
     	return;
 	}
 
@@ -3818,7 +3818,7 @@ END_SQL
 		            $self->log_append("{3}Kaine's auctobot hands you the {7}$item->{'NAME'} {3}$how_got auction $row->[0].\n");
 	         	    $self->room_sighttell("{3}Kaine's auctobot hands {7}$self->{'NAME'} {3}the {7}$item->{'NAME'} {3}$self->{'PRO'} won in auction $row->[0].\n");
                         }
-                    }else{ $self->log_append("Your not quite big enough to recieve $item->{'NAME'} yet. <Min Level: $item->{'MINLEV'}>\n"); }
+                    }else{ $self->log_append("You're not quite big enough to receive $item->{'NAME'} yet. <Min Level: $item->{'MINLEV'}>\n"); }
 		}
 
       

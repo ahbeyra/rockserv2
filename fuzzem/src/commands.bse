@@ -561,7 +561,7 @@ $main::adminbase_mult->{'setuserstat'}    =  sub {
 $main::adminbase_mult->{'removegeneral'} = sub { $_[0]->delete_all_votes_for_general($_[1]); };
 $main::adminbase_mult->{'t'} = sub { if(!$_[0]->is_admin()) { $_[0]->log_append("You do not have proper access to this command.\n"); return; } $_[0]->{'T'} = $_[0]->{'MT'} + $_[1]; $_[0]->log_append("Ok.\n"); };
 $main::adminbase_mult->{'ash'} = sub { $_[0]->admin_shout($_[1]); };
-$main::adminbase_mult->{'msg'} = sub { $_[0]->log_append("{17}-- message could not be sent (use the forums to send and recieve messages) --\n"); };
+$main::adminbase_mult->{'msg'} = sub { $_[0]->log_append("{17}-- message could not be sent (use the forums to send and receive messages) --\n"); };
 $main::adminbase_mult->{'dnum'} = sub { if(!defined($main::objs->{$_[1]})) { $_[0]->log_append("Object does not exist. Doe.\n"); return; }  my $o = $main::objs->{$_[1]}; $_[0]->log_append("$o->{'NAME'}\'s description is indexed on compression table as ".$o->desc_compressnum.".\n"); };
 $main::adminbase_mult->{'levelto'} = sub { if(($_[1]>=1)&&($_[1]<=2000)) { $_[0]->stats_allto($_[1]); } else { $_[0]->log_append("{1}Try a more reasonable level, please.\n"); } };
 $main::adminbase_mult->{'dblist'} = sub { $_[0]->db_list(split(/ /,$_[1],2)); };
@@ -1371,6 +1371,7 @@ sub special_event_set {
         }
         $self->log_append("{2}Special event enabled: {16}${label}{2}.\n");
         &main::rock_shout(undef, "{16}*** Special Event Live: {7}${label}{16} ***\n");
+        &main::special_event_spawn_active;
     } else {
         my $removed = special_event_remove($def);
         if ($removed == -1) {

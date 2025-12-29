@@ -72,6 +72,148 @@ sub rockserv_heartbeat {
     return;
 }
 
+sub rockserv_boss_watchlist_init {
+    my $path = "$main::base_code_dir/items.bse";
+    return if !-e $path;
+
+    my %watchlist;
+    open(my $fh, '<', $path) or return;
+    while (my $line = <$fh>) {
+        next if $line !~ /\$main::objbase->\[(\d+)\]/;
+        next if $line !~ /onDeath_RESPAWN/;
+        next if $line !~ /'LIMIT'\s*,\s*1/;
+        my $rec = int $1;
+        my ($name_expr) = $line =~ /'NAME'\s*,\s*([^,]+)/;
+        my ($respawn_expr) = $line =~ /'onDeath_RESPAWN'\s*,\s*([^,]+)/;
+        next if !$respawn_expr;
+
+        my $name = $name_expr // '';
+        $name =~ s/^\s+|\s+$//g;
+        if ($name =~ /^'(.+)'$/) {
+            $name = $1;
+        } elsif ($name =~ /^&main::rand_ele/) {
+            $name = 'Random Boss';
+        } elsif ($name eq '') {
+            $name = "Boss #$rec";
+        }
+
+        my $respawn_max = boss_watchlist_respawn_max($respawn_expr);
+        $respawn_max = 0 if !$respawn_max;
+        $watchlist{$rec} = {
+            name => $name,
+            respawn_max_min => $respawn_max,
+            rooms => {},
+        };
+    }
+    close($fh);
+
+    return if !%watchlist;
+
+    for my $room (@{$main::map}) {
+        next unless $room && $room->{'ITEMSPAWN'};
+        for my $rec (split(/\s*,\s*/, $room->{'ITEMSPAWN'})) {
+            $rec = int $rec;
+            next if !$watchlist{$rec};
+            $watchlist{$rec}->{'rooms'}->{$room->{'ROOM'}} = 1;
+        }
+    }
+
+    $main::boss_watchlist = \%watchlist;
+    my $max_respawn = 0;
+    for my $rec (keys %watchlist) {
+        my $respawn = $watchlist{$rec}->{'respawn_max_min'} || 0;
+        $max_respawn = $respawn if $respawn > $max_respawn;
+    }
+    $main::boss_watch_max_respawn = $max_respawn;
+    return;
+}
+
+sub boss_watchlist_respawn_max {
+    my $expr = shift;
+    return 0 if !defined $expr || $expr eq '';
+    my $val = $expr;
+    $val =~ s/int\s+rand\((\d+)\)/($1 - 1)/g;
+    $val =~ s/int\s+rand\s+(\d+)/($1 - 1)/g;
+    $val =~ s/rand\((\d+)\)/$1/g;
+    $val =~ s/rand\s+(\d+)/$1/g;
+    $val =~ s/[^0-9\.\+\-\*\/\(\) ]//g;
+    my $max = eval $val;
+    return $@ ? 0 : $max;
+}
+
+sub rockserv_boss_watchdog {
+    return if !$main::boss_watchlist || !%{$main::boss_watchlist};
+
+    my %present;
+    for my $obj (values %{$main::objs}) {
+        next unless $obj && ref($obj) && ref($obj) ne uc(ref($obj));
+        next unless $obj->{'TYPE'} == OTYPE_NPC;
+        my $rec = $obj->{'REC'};
+        next if !$rec || !$main::boss_watchlist->{$rec};
+        $present{$rec}++;
+    }
+
+    my %scheduled;
+    for my $etime (keys %{$main::eventman->{'EVENTS'}}) {
+        my $events = $main::eventman->{'EVENTS'}->{$etime} || [];
+        for my $event (@$events) {
+            next unless $event && ref($event) eq 'ARRAY';
+            my $code = $event->[1];
+            next unless $code && $code eq \&rockobj::item_spawn;
+            my $rec = $event->[3];
+            next if !$rec || !$main::boss_watchlist->{$rec};
+            $scheduled{$rec} = $etime;
+        }
+    }
+
+    my $now = time;
+    for my $rec (keys %{$main::boss_watchlist}) {
+        my $boss = $main::boss_watchlist->{$rec};
+        if ($present{$rec}) {
+            $main::boss_watch_state->{$rec}->{'last_seen'} = $now;
+            next;
+        }
+        next if $scheduled{$rec};
+
+        my $last_seen = $main::boss_watch_state->{$rec}->{'last_seen'} // 0;
+        my $respawn_min = $boss->{'respawn_max_min'} || 0;
+        my $stale_after = ($respawn_min + 60) * 60;
+        $stale_after = 15 * 60 if $stale_after < 15 * 60;
+
+        next if ($now - $last_seen) < $stale_after;
+
+        my @rooms = sort { $a <=> $b } keys %{$boss->{'rooms'} || {}};
+        if (!@rooms) {
+            next;
+        }
+        my $room_id = $rooms[int rand @rooms];
+        my $room = $main::map->[$room_id];
+        next if !$room;
+
+        my $spawnee = $room->item_spawn($rec);
+        if ($spawnee) {
+            $main::boss_watch_state->{$rec}->{'last_seen'} = $now;
+            &main::rock_shout(undef, "{1}Boss watchdog forced respawn after max+1h: {17}$boss->{'name'} {1}(rec $rec) in room $room_id.\n", 1);
+        } else {
+            &main::rock_shout(undef, "{11}Boss watchdog failed to respawn {17}$boss->{'name'} {11}(rec $rec) in room $room_id.\n", 1);
+        }
+    }
+
+    my $interval = $ENV{'ROCKSERV_BOSS_WATCHDOG_INTERVAL'} || 900;
+    $interval = 900 if $interval !~ /^\d+$/ || $interval < 300;
+    $main::eventman->enqueue($interval, \&main::rockserv_boss_watchdog);
+    return;
+}
+
+sub rockserv_boss_watchdog_init {
+    my $enabled = $ENV{'ROCKSERV_BOSS_WATCHDOG'};
+    return if defined $enabled && $enabled =~ /^(0|off|false|no)$/i;
+    &rockserv_boss_watchlist_init();
+    return if !$main::boss_watchlist || !%{$main::boss_watchlist};
+    &rockserv_boss_watchdog();
+    return;
+}
+
 sub rockserv_heartbeat_init {
     my $enabled = $ENV{'ROCKSERV_HEARTBEAT'};
     return if defined $enabled && $enabled =~ /^(0|off|false|no)$/i;

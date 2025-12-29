@@ -61,7 +61,7 @@ RVS is very simply-coded. Too simply, in fact. It currently does not check to se
 
 RVS works in the form of "RVS <roomtag> <value>". For example, if you wanted to change the room's gore level to 0, you might type "RVS gor 0", since GOR is the tag for the room's gore level. You'd never want to change it, but it's an example. In fact, the game doesn't even save GOR information onto the flatfile.
 
-Now that I've taunted you with useless code, here's some stuff that RVS was actually meant to be used for. Still, if you need any of these, you're better off writing me or requesting it from me (rocksupport@zilla.net) - and I'll do it for you.
+Now that I've taunted you with useless code, here's some stuff that RVS was actually meant to be used for. Still, if you need any of these, you're better off writing me or requesting it from me (support@doyometer.com) - and I'll do it for you.
 
 Note that this documentation will change from time to time as I add more RVS-related stuff, and/or more options are added to their functions below.
 
@@ -89,4 +89,3 @@ Note that this documentation will change from time to time as I add more RVS-rel
 ooo FLATFILE ooo
 
 Documentation will be added if requested - I dont think anyone'll be using the flatfile stuff anyway. It's very similar to the R1 flatfile, only it's interpreted in as objects and stuff this time.
-

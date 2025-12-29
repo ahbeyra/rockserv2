@@ -706,7 +706,7 @@ sub check_auto_cleanup {
     # 2) Don't reboot if we attempted a reboot within 6 hours ago
     #    (maybe the attempt succeeded, maybe it didn't, but it was an attempt)
     my $users = scalar keys(%{$main::activeuids}); # NOTE: %{$main::act..}?
-    if ($_[0] || ($users < 15 && ((time - $main::starttime) > 3600*15) && (time - $main::rock_stats{'lastautocleanup'} > 3600*6))) {
+    if ($_[0] || ($users < 1 && ((time - $main::starttime) > 3600*15) && (time - $main::rock_stats{'lastautocleanup'} > 3600*12))) {
         
         # Warn that we're cleaning up really soon.
         &rock_shout(undef, "{1}*** ATTENTION ***\n{1}*** {2}Rock will be automatically rebooting for routine cleanup in 5 minutes.\n{1}*** {2}Please finish up what you are doing and log off.\n{1}*** {2}Items on the floor will not be saved.\n{1}***\n");

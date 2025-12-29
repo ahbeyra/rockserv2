@@ -130,7 +130,7 @@ try {
             <div class="window-title">Server Console</div>
             <div class="window-body">
               <ul class="list">
-                <li><span>Host</span> example.com</li>
+                <li><span>Host</span> www.doyometer.com</li>
                 <li><span>Realm</span> <?php echo htmlspecialchars(rockserv_realm_label(), ENT_QUOTES); ?></li>
                 <li><span>Telnet</span> <?php echo htmlspecialchars((string)rockserv_realm_telnet_port(), ENT_QUOTES); ?></li>
                 <li><span>Patch</span> 2.0.13</li>

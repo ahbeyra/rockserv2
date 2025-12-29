@@ -12,14 +12,14 @@ use strict;
 #####################################################
 $main::base_code_dir = $ENV{'ROCKSERV_BASE_CODE_DIR'} || '/app/dillfrog/src'; # NOTE: no trailing /.
 $main::base_web_dir = '/var/www/html/games/rs2';
-$main::base_web_url = 'https://example.com/';
+$main::base_web_url = 'https://www.doyometer.com/';
 
 #####################################################
 # E-mail and Contact Information
 #####################################################
 $main::mail_program = "/usr/sbin/sendmail -t";
-$main::rock_admin_email = $main::rock_support = 'support@example.com';
-$main::rock_serv_email = $main::rock_serv = 'support@example.com';
+$main::rock_admin_email = $main::rock_support = 'support@doyometer.com';
+$main::rock_serv_email = $main::rock_serv = 'support@doyometer.com';
 $main::pop_mail_server = 'localhost';
 $main::owner_name = "localhost";
 

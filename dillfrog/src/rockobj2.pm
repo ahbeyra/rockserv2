@@ -690,7 +690,7 @@ sub log_suspicious_activity {
 	# happened as a result of this activity.
 
     # This is used to note suspicious activity (aka, scriptiness)
-    my ($self, $msg, $thresh) = @_; # thresh is min occurrences before we care; default 0 (first occurrance)
+    my ($self, $msg, $thresh) = @_; # thresh is min occurrences before we care; default 0 (first occurrence)
 	
     # Non-players can't be suspicious.. they just can't!
     return unless $self->{'TYPE'} == 1;

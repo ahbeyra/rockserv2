@@ -522,7 +522,7 @@ sub on_touch {
  my $p = &main::obj_lookup($main::activeuids->{$k[int rand($#k+1)]});
  my $safeval = $main::map->[$p->{'ROOM'}]->{'SAFE'};
  if($main::map->[$p->{'ROOM'}]->{'SAFE'}){
-	$victim->log_append("{17}Nothing happend to $p->{'NAME'} they are in a safe room.\n");
+	$victim->log_append("{17}Nothing happened to $p->{'NAME'} they are in a safe room.\n");
  	 
  }
  	
@@ -2823,7 +2823,7 @@ sub on_say {
   $saystr = $$saystr;
   $saystr =~ s/^\s+//g;
   if($saystr eq "$self->{'TRIGKEY'}") {
-      $obj->log_append("{2}As you speak the ancient password, a stone panel suddenly slides open on the northern wall. The panel reveals three seperate slabs of granite along with an odd button.\n");
+      $obj->log_append("{2}As you speak the ancient password, a stone panel suddenly slides open on the northern wall. The panel reveals three separate slabs of granite along with an odd button.\n");
       $obj->room_sighttell("{7}A stone panel suddenly slides open on the northern wall.\n");
       $main::map->[$self->{'ROOM'}]->item_spawn(530, 531, 532, 537);
       $self->dissolve_allsubs();
@@ -4075,7 +4075,7 @@ sub can_unequip {
 	$self->{'ATYPE'} = 'CARRIED';
 	$who->item_spawn(734);
 	$who->item_spawn(1117);
-	$who->log_append("You once again seperate the Azral Figurine from the wooden splinter, and remove the spherule orb from its hand.\n");
+	$who->log_append("You once again separate the Azral Figurine from the wooden splinter, and remove the spherule orb from its hand.\n");
     return(1);
   
 }
@@ -4134,7 +4134,7 @@ sub on_touch {
 	$self->{'WC'}=60;
 	$who->item_spawn(734);
 	$who->item_spawn(1117);
-	$who->log_append("You once again seperate the Azral Figurine from the wooden splinter, and remove the spherule orb from its hand.\n");
+	$who->log_append("You once again separate the Azral Figurine from the wooden splinter, and remove the spherule orb from its hand.\n");
     return(1);
   }else{
 	$who->log_append("Nothing happens.\n");
@@ -4476,7 +4476,7 @@ sub on_cryl_receive {
 	    $self->room_sighttell("{6}God sends down a bolt of lightning and strikes the pile of cryl.\n");
 	    $main::events{$self->{'OBJID'}}=$self->{'DELAY'};
   	} else {
-	    $self->say('Please places at least '.($self->{'COSTPERPLAY'}-$self->{'AI'}->{'COINHOLDER'}).' more cryl to recieve a blessing.');
+	    $self->say('Please place at least '.($self->{'COSTPERPLAY'}-$self->{'AI'}->{'COINHOLDER'}).' more cryl to receive a blessing.');
   	}
 	}else{
 		$from->{'CRYL'} += $amt;
@@ -4524,7 +4524,7 @@ my $roll = int(rand(100));
     $self->room_sighttell("{17}.\n");
 	if(($randcoin >= 1800000) || (($roll > 94)&&($luck > 90))){
 
-    	$self->room_sighttell("$player->{'NAME'} has recieved a trimoral suffering.\n");
+    	$self->room_sighttell("$player->{'NAME'} has received a trimoral suffering.\n");
     	$player->item_spawn(1250);
     	$self->{'AI'}->{'COINHOLDER'} = 0;
     	return;

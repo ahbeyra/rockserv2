@@ -1343,6 +1343,8 @@ sub sql_update_stats {
     ($self->{'ADMIN'}?"1":"0"),
     $self->{'EMAIL'},
     int $self->{'RACE'},
+    int $self->{'NPCDEATHS'},
+    int $self->{'NPCKILLS'},
     int $self->{'PVPDEATHS'},
     int $self->{'PVPKILLS'},
     $self->dp_calc(),
@@ -1355,9 +1357,9 @@ sub sql_update_stats {
     $sth = $dbh->prepare(<<END_INSERT);
 INSERT INTO $main::db_name\.r2_players(
 NAME, LEV, KNO, MAJ, CHA, AGI, STR, DEF, WORTH, REPU, ADMIN, EMAIL, RACE,
-PVPDEATHS, PVPKILLS, DP, ARENA_PTS, INVENTORY, PW, LAST_SAVED
+NPCDEATHS, NPCKILLS, PVPDEATHS, PVPKILLS, DP, ARENA_PTS, INVENTORY, PW, LAST_SAVED
 )
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate())
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate())
 END_INSERT
   } else {
     $sth = $dbh->prepare(<<END_UPDATE);
@@ -1366,7 +1368,7 @@ SET NAME = ?, LEV  = ?, KNO  = ?,
     MAJ  = ?, CHA  = ?, AGI  = ?,
     STR  = ?, DEF  = ?, WORTH  = ?,
     REPU  = ?, ADMIN = ?, EMAIL = ?, RACE = ?,
-    PVPDEATHS = ?, PVPKILLS = ?, DP = ?, ARENA_PTS = ?, INVENTORY=?, PW=?, LAST_SAVED = sysdate()
+    NPCDEATHS = ?, NPCKILLS = ?, PVPDEATHS = ?, PVPKILLS = ?, DP = ?, ARENA_PTS = ?, INVENTORY=?, PW=?, LAST_SAVED = sysdate()
 WHERE NAME = ?
 END_UPDATE
 

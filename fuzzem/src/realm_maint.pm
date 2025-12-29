@@ -790,7 +790,7 @@ sub check_auto_cleanup {
   return unless $main::do_cleanup;  
 
   my $users = scalar keys(%{$main::activeuids}); # NOTE: %{$main::act..}?
-  if($_[0] || ($users < 15 && (time - $main::rock_stats{'lastautocleanup'} > 3600*6))) {  # every 6 hours
+  if($_[0] || ($users < 1 && (time - $main::rock_stats{'lastautocleanup'} > 3600*12))) {  # every 12 hours, 0 population
 
 
      &rock_shout(undef, "{1}*** ATTENTION ***\n{1}*** {2}Rock will be automatically rebooting for routine cleanup in 5 minutes.\n{1}*** {2}Please finish up what you are doing and log off.\n{1}*** {2}Items on the floor will not be saved.\n{1}***\n");

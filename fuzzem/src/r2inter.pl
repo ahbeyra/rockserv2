@@ -66,6 +66,8 @@ if (!$main::rock_dont_load){
     print "Loaded..\n";
 }
 
+&main::rockserv_boss_watchdog_init();
+
 
 # version control
 if ($main::rock_stats{'ver_mili'} < $main::ver_mili) { 
